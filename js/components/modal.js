@@ -11,6 +11,7 @@ const DOM = {
  * Fecha o modal
  */
 function fecharModal() {
+  DOM.overlay.classList.remove('visible');
   DOM.overlay.classList.add('hidden');
 }
 
@@ -36,7 +37,7 @@ export function modal({ titulo, conteudo, botoes, onFechar }) {
   botoes.forEach(({ texto, classe, onClick }) => {
     const btn = document.createElement('button');
     btn.type = 'button';
-    btn.className = classe || 'btn-modal-ok';
+    btn.className = 'btn-modal ' + (classe || 'btn-modal-ok');
     btn.textContent = texto;
     btn.addEventListener('click', () => {
       fecharModal();
@@ -46,6 +47,7 @@ export function modal({ titulo, conteudo, botoes, onFechar }) {
   });
 
   DOM.overlay.classList.remove('hidden');
+  DOM.overlay.classList.add('visible');
   const primeiroBtn = DOM.botoes.querySelector('button');
   if (primeiroBtn) primeiroBtn.focus();
 

@@ -8,9 +8,11 @@
   display: flex; align-items: center; justify-content: center;
   z-index: 100; padding: var(--gap);
   opacity: 0; visibility: hidden;
+}
+.modal-overlay.visible {
+  opacity: 1; visibility: visible;
   transition: opacity .25s ease, visibility .25s ease;
 }
-.modal-overlay.visible { opacity: 1; visibility: visible; }
 .modal-box {
   background: var(--bg); border-radius: var(--radius); width: 100%; max-width: 420px;
   max-height: 85dvh; overflow-y: auto; overscroll-behavior: contain;
@@ -37,3 +39,20 @@
 .modal-conteudo p { margin-bottom: .75rem; line-height: 1.5; }
 .modal-conteudo ul { margin: .5rem 0 .75rem 1.25rem; line-height: 1.5; }
 .modal-conteudo .exemplo { font-family: ui-monospace, "SF Mono", monospace; font-size: .9375rem; background: var(--surface); padding: .375rem .5rem; border-radius: 6px; }
+
+/* Inputs e labels dentro do modal */
+.modal-conteudo label { display: block; font-size: .875rem; font-weight: 500; color: var(--text-dim); margin-bottom: .375rem; }
+.modal-conteudo input[type="text"] {
+  width: 100%; padding: .75rem 1rem; border: 2px solid var(--border); border-radius: var(--r-sm);
+  background: var(--surface); color: var(--text); font-size: 1rem; outline: none;
+  transition: border-color var(--tr);
+}
+.modal-conteudo input[type="text"]:focus { border-color: var(--accent); }
+
+/* Botões do modal */
+.btn-modal-cancelar { background: var(--surface); color: var(--text); }
+.btn-modal-cancelar:hover { background: var(--border); }
+.btn-modal-ok { background: var(--accent); color: #fff; }
+.btn-modal-ok:hover { filter: brightness(1.1); }
+.btn-modal-danger { background: var(--red); color: #fff; }
+.btn-modal-danger:hover { filter: brightness(1.1); }
