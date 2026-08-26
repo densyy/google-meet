@@ -37,8 +37,18 @@
 .btn-modal-principal { background: var(--accent); color: #fff; }
 .btn-modal-principal:hover { filter: brightness(1.1); }
 .modal-conteudo p { margin-bottom: .75rem; line-height: 1.5; }
-.modal-conteudo ul { margin: .5rem 0 .75rem 1.25rem; line-height: 1.5; }
+.modal-conteudo ul, .modal-conteudo ol { margin: .5rem 0 .75rem 1.25rem; line-height: 1.5; }
 .modal-conteudo .exemplo { font-family: ui-monospace, "SF Mono", monospace; font-size: .9375rem; background: var(--surface); padding: .375rem .5rem; border-radius: 6px; }
+
+/* Modal de ajuda — passos e exemplo */
+.ajuda-passos { margin-bottom: 1rem; padding-left: 1.25rem; }
+.ajuda-passos li { margin-bottom: .625rem; line-height: 1.5; }
+.ajuda-passos li:last-child { margin-bottom: 0; }
+.ajuda-exemplo { background: var(--surface); border-radius: var(--r-sm); padding: 1rem 1.25rem; margin-top: 1rem; }
+.ajuda-exemplo-label { font-size: .8125rem; color: var(--text-dim); margin-bottom: .25rem; }
+.ajuda-exemplo-url { font-family: ui-monospace, "SF Mono", monospace; font-size: .9375rem; color: var(--text); margin-bottom: .375rem; }
+.ajuda-exemplo-codigo { color: var(--accent); font-weight: 600; }
+.ajuda-exemplo-hint { font-size: .8125rem; color: var(--text-dim); margin-bottom: 0; margin-top: .5rem; padding-top: .5rem; border-top: 1px solid var(--border); }
 
 /* Inputs e labels dentro do modal */
 .modal-conteudo label { display: block; font-size: .875rem; font-weight: 500; color: var(--text-dim); margin-bottom: .375rem; }
