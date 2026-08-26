@@ -74,3 +74,16 @@ export function removerSala(salas, idx) {
 export function buscarSalaPorCodigo(salas, codigo) {
   return salas.find(s => s.codigo === codigo);
 }
+
+/**
+ * Move sala para o topo da lista (mais usada)
+ * @param {Array<{nome: string, codigo: string}>} salas
+ * @param {string} codigo
+ * @returns {Array} nova lista com a sala no topo
+ */
+export function moverParaTopo(salas, codigo) {
+  const idx = salas.findIndex(s => s.codigo === codigo);
+  if (idx <= 0) return salas;
+  const sala = salas[idx];
+  return [sala, ...salas.slice(0, idx), ...salas.slice(idx + 1)];
+}
