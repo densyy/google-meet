@@ -1,6 +1,8 @@
 {
   "name": "MeetGo",
   "short_name": "MeetGo",
+  "start_url": "/google-meet/",
+  "scope": "/google-meet/",
   "icons": [
     {
       "src": "/images/web-app-manifest-192x192.png",
