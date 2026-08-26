@@ -4,6 +4,8 @@
 
 MeetGo é um webapp que facilita entrar em reuniões do Google Meet usando código. O app do iPhone escondeu o campo de ID — só entra por link. O MeetGo resolve isso de forma simples, direto do navegador.
 
+🔗 **Acesse o app:** [https://densyy.github.io/google-meet/](https://densyy.github.io/google-meet/)
+
 ## Pré-requisitos
 
 - Navegador web (Chrome, Safari, Firefox)
