@@ -5,10 +5,81 @@
   const CHAVE_SALAS = 'salas';
   const REDIRECT_BASE = 'https://meet.google.com/';
   const DELAY_RESGATE = 3000;
-
   const RE_CODIGO = /([a-z]{3}-?[a-z]{4}-?[a-z]{3})/i;
 
-  // DOM
+  // ── Componente UI ────────────────────────────────────────
+
+  const UI = {
+    // Toast (alerta temporário)
+    toast(msg, tipo = 'ok') {
+      const container = document.getElementById('toast-container');
+      const icones = { ok: 'fa-check-circle', erro: 'fa-exclamation-circle', info: 'fa-info-circle' };
+      const toast = document.createElement('div');
+      toast.className = 'toast toast-' + tipo;
+      toast.innerHTML = '<i class="fa-solid ' + (icones[tipo] || icones.ok) + '"></i> ' + msg;
+      container.appendChild(toast);
+      setTimeout(() => toast.remove(), 2300);
+    },
+
+    // Modal centralizado reutilizável
+    modal({ titulo, conteudo, botoes, onFechar }) {
+      const overlay = document.getElementById('modal-overlay');
+      const box = document.getElementById('modal-box');
+      const elTitulo = document.getElementById('modal-titulo');
+      const elConteudo = document.getElementById('modal-conteudo');
+      const elBotoes = document.getElementById('modal-botoes');
+
+      elTitulo.textContent = titulo;
+      elConteudo.innerHTML = typeof conteudo === 'string' ? '<p>' + conteudo + '</p>' : '';
+      elBotoes.innerHTML = '';
+
+      if (typeof conteudo !== 'string') {
+        elConteudo.innerHTML = '';
+        elConteudo.appendChild(conteudo);
+      }
+
+      botoes.forEach(({ texto, classe, onClick }) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = classe || 'btn-modal-ok';
+        btn.textContent = texto;
+        btn.addEventListener('click', () => {
+          UI.fecharModal();
+          if (onClick) onClick();
+        });
+        elBotoes.appendChild(btn);
+      });
+
+      overlay.classList.remove('hidden');
+      const primeiroBtn = elBotoes.querySelector('button');
+      if (primeiroBtn) primeiroBtn.focus();
+
+      // Fechar no backdrop
+      overlay.onclick = (e) => {
+        if (e.target === overlay) {
+          UI.fecharModal();
+          if (onFechar) onFechar();
+        }
+      };
+
+      // Fechar com Escape
+      const onKey = (e) => {
+        if (e.key === 'Escape') {
+          UI.fecharModal();
+          if (onFechar) onFechar();
+          document.removeEventListener('keydown', onKey);
+        }
+      };
+      document.addEventListener('keydown', onKey);
+    },
+
+    fecharModal() {
+      document.getElementById('modal-overlay').classList.add('hidden');
+    }
+  };
+
+  // ── DOM ──────────────────────────────────────────────────
+
   const input = document.getElementById('codigo-input');
   const btnEntrar = document.getElementById('btn-entrar');
   const btnColar = document.getElementById('btn-colar');
@@ -17,20 +88,9 @@
   const salasList = document.getElementById('salas-list');
   const resgate = document.getElementById('resgate');
   const resgateLink = document.getElementById('resgate-link');
-  const dialogRenomear = document.getElementById('dialog-renomear');
-  const formRenomear = document.getElementById('form-renomear');
-  const nomeInput = document.getElementById('nome-input');
-  const btnCancelar = document.getElementById('btn-cancelar');
   const btnAjuda = document.getElementById('btn-ajuda');
-  const dialogAjuda = document.getElementById('dialog-ajuda');
-  const btnFecharAjuda = document.getElementById('btn-fechar-ajuda');
-  const dialogRemover = document.getElementById('dialog-remover');
-  const dialogRemoverTexto = document.getElementById('dialog-remover-texto');
-  const btnNaoRemover = document.getElementById('btn-nao-remover');
-  const btnSimRemover = document.getElementById('btn-sim-remover');
 
   let timerResgate = null;
-  let idxRemover = null;
 
   // ── Helpers ──────────────────────────────────────────────
 
@@ -117,7 +177,6 @@
     salas.forEach((sala, idx) => {
       const card = document.createElement('div');
       card.className = 'sala-card';
-      card.dataset.idx = idx;
 
       const info = document.createElement('div');
       info.className = 'sala-card-info';
@@ -128,17 +187,17 @@
       const acoes = document.createElement('div');
       acoes.className = 'sala-card-acoes';
 
-      // Renomear (Font Awesome)
+      // Renomear
       const btnRenomear = document.createElement('button');
       btnRenomear.className = 'btn-card btn-renomear';
       btnRenomear.innerHTML = '<i class="fa-solid fa-pen"></i>';
       btnRenomear.setAttribute('aria-label', 'Renomear ' + sala.nome);
       btnRenomear.addEventListener('click', (e) => {
         e.stopPropagation();
-        abrirDialogRenomear(idx);
+        modalRenomear(idx, sala.nome);
       });
 
-      // Copiar link (Font Awesome)
+      // Copiar link
       const btnCopiar = document.createElement('button');
       btnCopiar.className = 'btn-card btn-copiar';
       btnCopiar.innerHTML = '<i class="fa-solid fa-copy"></i>';
@@ -148,14 +207,14 @@
         copiarLink(sala);
       });
 
-      // Remover (Font Awesome)
+      // Remover
       const btnRemover = document.createElement('button');
       btnRemover.className = 'btn-card btn-remover';
       btnRemover.innerHTML = '<i class="fa-solid fa-trash"></i>';
       btnRemover.setAttribute('aria-label', 'Remover ' + sala.nome);
       btnRemover.addEventListener('click', (e) => {
         e.stopPropagation();
-        abrirDialogRemover(idx, sala.nome);
+        modalRemover(idx, sala.nome);
       });
 
       acoes.append(btnRenomear, btnCopiar, btnRemover);
@@ -169,84 +228,92 @@
   function copiarLink(sala) {
     const url = REDIRECT_BASE + sala.codigo;
     navigator.clipboard.writeText(url).then(() => {
-      setFeedback('Link copiado!', 'ok');
-      setTimeout(() => setFeedback('', ''), 2000);
+      UI.toast('Link copiado!', 'ok');
     }).catch(() => {
-      setFeedback('Não foi possível copiar. Link: ' + url, '');
+      UI.toast('Não foi possível copiar', 'erro');
     });
   }
 
-  // ── Salas: dialog renomear ───────────────────────────────
+  // ── Modal: Renomear ──────────────────────────────────────
 
-  function abrirDialogRenomear(idx) {
-    const salas = carregarSalas();
-    const sala = salas[idx];
-    if (!sala) return;
+  function modalRenomear(idx, nomeAtual) {
+    const inputNome = document.createElement('input');
+    inputNome.type = 'text';
+    inputNome.value = nomeAtual;
+    inputNome.maxLength = 30;
+    inputNome.autocomplete = 'off';
 
-    nomeInput.value = sala.nome;
-    dialogRenomear.dataset.idx = idx;
-    dialogRenomear.showModal();
-    nomeInput.focus();
-    nomeInput.select();
-  }
+    const wrapper = document.createElement('div');
+    wrapper.innerHTML = '<label for="input-renomear">Nome da sala</label>';
+    wrapper.appendChild(inputNome);
 
-  function fecharDialogRenomear() {
-    dialogRenomear.close();
-    dialogRenomear.dataset.idx = '';
-  }
-
-  formRenomear.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const idx = parseInt(dialogRenomear.dataset.idx, 10);
-    const novoNome = nomeInput.value.trim();
-    if (isNaN(idx) || !novoNome) { fecharDialogRenomear(); return; }
-
-    const salas = carregarSalas();
-    if (salas[idx]) {
-      salas[idx].nome = novoNome;
-      salvarSalas(salas);
-      renderizarSalas();
-    }
-    fecharDialogRenomear();
-  });
-
-  btnCancelar.addEventListener('click', fecharDialogRenomear);
-
-  // ── Salas: dialog remover ────────────────────────────────
-
-  function abrirDialogRemover(idx, nome) {
-    idxRemover = idx;
-    dialogRemoverTexto.textContent = 'Tem certeza que deseja remover "' + nome + '"?';
-    dialogRemover.showModal();
-  }
-
-  function fecharDialogRemover() {
-    dialogRemover.close();
-    idxRemover = null;
-  }
-
-  btnNaoRemover.addEventListener('click', fecharDialogRemover);
-
-  btnSimRemover.addEventListener('click', () => {
-    if (idxRemover === null) return;
-    const salas = carregarSalas();
-    salas.splice(idxRemover, 1);
-    salvarSalas(salas);
-    renderizarSalas();
-    fecharDialogRemover();
-  });
-
-  // ── Dialog Ajuda ─────────────────────────────────────────
-
-  btnAjuda.addEventListener('click', () => dialogAjuda.showModal());
-  btnFecharAjuda.addEventListener('click', () => dialogAjuda.close());
-
-  // Fechar dialogs com clique no backdrop
-  [dialogRenomear, dialogAjuda, dialogRemover].forEach(dlg => {
-    dlg.addEventListener('click', (e) => {
-      if (e.target === dlg) dlg.close();
+    UI.modal({
+      titulo: 'Renomear sala',
+      conteudo: wrapper,
+      botoes: [
+        { texto: 'Cancelar', classe: 'btn-modal-cancelar' },
+        { texto: 'Pronto', classe: 'btn-modal-ok', onClick: () => {
+          const novoNome = inputNome.value.trim();
+          if (!novoNome) return;
+          const salas = carregarSalas();
+          if (salas[idx]) {
+            salas[idx].nome = novoNome;
+            salvarSalas(salas);
+            renderizarSalas();
+          }
+        }}
+      ]
     });
-  });
+
+    setTimeout(() => { inputNome.focus(); inputNome.select(); }, 100);
+  }
+
+  // ── Modal: Remover ───────────────────────────────────────
+
+  function modalRemover(idx, nome) {
+    UI.modal({
+      titulo: 'Remover sala',
+      conteudo: 'Tem certeza que deseja remover "' + nome + '"?',
+      botoes: [
+        { texto: 'Não', classe: 'btn-modal-cancelar' },
+        { texto: 'Remover', classe: 'btn-modal-danger', onClick: () => {
+          const salas = carregarSalas();
+          salas.splice(idx, 1);
+          salvarSalas(salas);
+          renderizarSalas();
+          UI.toast('Sala removida', 'info');
+        }}
+      ]
+    });
+  }
+
+  // ── Modal: Ajuda ─────────────────────────────────────────
+
+  function modalAjuda() {
+    const conteudo = document.createElement('div');
+    conteudo.innerHTML = `
+      <ol class="ajuda-passos">
+        <li>Alguém te envia o código numa mensagem.</li>
+        <li>O código é composto por letras e números, separados por hífens.</li>
+        <li>Digite ou cole o código na tela e toque <strong>Entrar</strong>.</li>
+      </ol>
+      <div class="ajuda-exemplo">
+        <p class="ajuda-exemplo-label">Exemplo de código:</p>
+        <p class="ajuda-exemplo-url">meet.google.com/<span class="ajuda-exemplo-codigo">abc-defg-hij</span></p>
+        <p class="ajuda-exemplo-hint">A parte colorida é o código que você precisa digitar.</p>
+      </div>
+    `;
+
+    UI.modal({
+      titulo: 'Onde encontro esse código?',
+      conteudo: conteudo,
+      botoes: [
+        { texto: 'Entendi', classe: 'btn-modal-ok' }
+      ]
+    });
+  }
+
+  btnAjuda.addEventListener('click', modalAjuda);
 
   // ── Salas: salvar nova ───────────────────────────────────
 

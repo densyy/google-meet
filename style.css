@@ -43,8 +43,7 @@ h2 { font-size: 1.125rem; font-weight: 600; margin-bottom: 0.5rem; }
   display: flex; align-items: center; gap: 0.75rem;
   background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
   padding: 1rem 1.25rem; min-height: 64px;
-  transition: background var(--tr), border-color var(--tr);
-  cursor: pointer;
+  transition: background var(--tr), border-color var(--tr); cursor: pointer;
 }
 .sala-card:hover { border-color: var(--accent); }
 .sala-card:active { background: var(--accent-bg); }
@@ -95,7 +94,7 @@ h2 { font-size: 1.125rem; font-weight: 600; margin-bottom: 0.5rem; }
 .btn-entrar:active { opacity: 0.85; transform: scale(0.98); }
 .btn-entrar:disabled { opacity: 0.6; cursor: wait; }
 
-/* Feedback */
+/* Feedback inline */
 .feedback { margin-top: 0.75rem; font-size: 0.9375rem; min-height: 1.5em; line-height: 1.5; }
 .feedback.erro { color: var(--red); }
 .feedback.ok { color: var(--accent); }
@@ -127,43 +126,55 @@ h2 { font-size: 1.125rem; font-weight: 600; margin-bottom: 0.5rem; }
 .btn-resgate:hover { filter: brightness(1.1); }
 .btn-resgate:active { transform: scale(0.97); }
 
-/* Dialog modal (compartilhado) */
-.dialog-modal {
-  border: none; border-radius: var(--radius); padding: clamp(1.5rem, 5vw, 2rem);
-  max-width: 380px; width: calc(100% - 2rem);
-  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+/* ══════════════════════════════════════════════
+   COMPONENTE: Modal
+   ══════════════════════════════════════════════ */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 1000;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(0,0,0,0.5);
+  padding: 1rem;
+  animation: fadeIn 0.15s ease;
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.modal-box {
   background: var(--bg); color: var(--text);
-  animation: dialogIn 0.2s ease;
+  border-radius: var(--radius); padding: clamp(1.5rem, 5vw, 2rem);
+  max-width: 400px; width: 100%;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  animation: modalIn 0.2s ease;
 }
-@keyframes dialogIn {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(0.95) translateY(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
 }
-.dialog-modal::backdrop { background: rgba(0,0,0,0.5); }
-.dialog-titulo { font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem; }
-.dialog-texto { font-size: 0.9375rem; color: var(--text-dim); margin-bottom: 1.25rem; line-height: 1.6; }
-.dialog-modal label { display: block; font-size: 0.875rem; font-weight: 500; color: var(--text-dim); margin-bottom: 0.5rem; }
-.dialog-modal input {
+
+.modal-titulo { font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem; }
+.modal-conteudo { margin-bottom: 1.25rem; }
+.modal-conteudo p { font-size: 0.9375rem; color: var(--text-dim); line-height: 1.6; }
+.modal-conteudo label { display: block; font-size: 0.875rem; font-weight: 500; color: var(--text-dim); margin-bottom: 0.5rem; }
+.modal-conteudo input {
   width: 100%; padding: 0.875rem 1rem; border: 2px solid var(--border); border-radius: var(--r-sm);
   background: var(--surface); color: var(--text); font-size: 1.125rem; outline: none;
-  margin-bottom: 1rem; min-height: 52px; transition: border-color var(--tr);
+  min-height: 52px; transition: border-color var(--tr);
 }
-.dialog-modal input:focus { border-color: var(--accent); }
-.dialog-botoes { display: flex; gap: 0.5rem; }
-.dialog-botoes button {
+.modal-conteudo input:focus { border-color: var(--accent); }
+.modal-botoes { display: flex; gap: 0.5rem; }
+.modal-botoes button {
   flex: 1; padding: 0.875rem; border: none; border-radius: var(--r-sm);
   font-size: 1rem; font-weight: 600; cursor: pointer; min-height: 52px;
   transition: background var(--tr), transform 0.1s;
 }
-.dialog-botoes button:active { transform: scale(0.97); }
-.btn-dialog-cancelar { background: var(--surface); color: var(--text); }
-.btn-dialog-cancelar:hover { background: var(--border); }
-.btn-dialog-ok { background: var(--accent); color: #fff; }
-.btn-dialog-ok:hover { filter: brightness(1.1); }
-.btn-dialog-danger { background: var(--red); }
-.btn-dialog-danger:hover { filter: brightness(1.1); }
+.modal-botoes button:active { transform: scale(0.97); }
+.btn-modal-cancelar { background: var(--surface); color: var(--text); }
+.btn-modal-cancelar:hover { background: var(--border); }
+.btn-modal-ok { background: var(--accent); color: #fff; }
+.btn-modal-ok:hover { filter: brightness(1.1); }
+.btn-modal-danger { background: var(--red); }
+.btn-modal-danger:hover { filter: brightness(1.1); }
 
-/* Ajuda (dentro do dialog) */
+/* Ajuda (dentro do modal) */
 .ajuda-passos {
   padding-left: 1.25rem; display: flex; flex-direction: column; gap: 0.625rem;
   margin-bottom: 1.25rem;
@@ -180,6 +191,40 @@ h2 { font-size: 1.125rem; font-weight: 600; margin-bottom: 0.5rem; }
 }
 .ajuda-exemplo-codigo { color: var(--accent); font-weight: 700; }
 .ajuda-exemplo-hint { font-size: 0.8125rem; color: var(--text-dim); margin-top: 0.5rem; font-style: italic; }
+
+/* ══════════════════════════════════════════════
+   COMPONENTE: Toast (Alert)
+   ══════════════════════════════════════════════ */
+.toast-container {
+  position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%);
+  z-index: 2000; display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+  pointer-events: none;
+}
+.toast {
+  display: flex; align-items: center; gap: 0.625rem;
+  padding: 0.875rem 1.25rem; border-radius: var(--radius);
+  font-size: 0.9375rem; font-weight: 500;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+  pointer-events: auto;
+  animation: toastIn 0.25s ease, toastOut 0.2s ease forwards;
+  animation-delay: 0s, 2s;
+}
+.toast i { font-size: 1rem; flex-shrink: 0; }
+.toast-ok { background: var(--accent); color: #fff; }
+.toast-ok i { color: #fff; }
+.toast-erro { background: var(--red); color: #fff; }
+.toast-erro i { color: #fff; }
+.toast-info { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
+.toast-info i { color: var(--accent); }
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateY(1rem) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes toastOut {
+  from { opacity: 1; transform: translateY(0) scale(1); }
+  to { opacity: 0; transform: translateY(-0.5rem) scale(0.95); }
+}
 
 /* Acessibilidade */
 @media (prefers-reduced-motion: reduce) {
