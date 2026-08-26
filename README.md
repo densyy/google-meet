@@ -1,8 +1,8 @@
-# Google Meet Helper
+# MeetGo
 
 ## Descrição
 
-Webapp que facilita entrar em reuniões do Google Meet usando código. O app do iPhone escondeu o campo de ID — só entra por link. Esta ferramenta resolve isso de forma simples.
+MeetGo é um webapp que facilita entrar em reuniões do Google Meet usando código. O app do iPhone escondeu o campo de ID — só entra por link. O MeetGo resolve isso de forma simples, direto do navegador.
 
 ## Pré-requisitos
 
