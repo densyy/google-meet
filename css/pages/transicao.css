@@ -1,0 +1,82 @@
+/* ══════════════════════════════════════════════
+   PÁGINA: Transição (countdown + redirect)
+   ══════════════════════════════════════════════ */
+
+.transicao-main {
+  display: flex; align-items: center; justify-content: center;
+  min-height: 100dvh; padding: var(--gap);
+  padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom);
+  max-width: 100%;
+}
+.transicao-card {
+  text-align: center; width: 100%; max-width: 360px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: clamp(1.5rem, 5vw, 2.5rem); position: relative; overflow: hidden;
+}
+.transicao-card::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(180px 120px at 50% 0%, rgba(0,113,227,.06), transparent);
+  pointer-events: none;
+}
+.transicao-icon {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 64px; height: 64px; border-radius: 50%; background: var(--accent);
+  color: #fff; font-size: 1.5rem; margin-bottom: clamp(1rem, 4vw, 1.5rem);
+  box-shadow: 0 4px 16px rgba(0,113,227,.35);
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 4px 16px rgba(0,113,227,.35); }
+  50% { box-shadow: 0 4px 28px rgba(0,113,227,.5); }
+}
+.transicao-titulo {
+  font-size: clamp(1.5rem, 6vw, 1.75rem); font-weight: 700; letter-spacing: -0.02em;
+  color: var(--text); margin-bottom: .25rem;
+}
+.transicao-nome {
+  font-size: 1rem; font-weight: 500; color: var(--text-dim);
+  margin-bottom: clamp(1.5rem, 6vw, 2rem); white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis; max-width: 100%;
+}
+
+/* Countdown */
+.transicao-countdown-wrap {
+  position: relative; width: clamp(110px, 36vw, 120px); height: clamp(110px, 36vw, 120px);
+  margin: 0 auto clamp(1.25rem, 4vw, 1.75rem);
+}
+.transicao-countdown-svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.transicao-countdown-bg {
+  fill: none; stroke: var(--border); stroke-width: 6;
+}
+.transicao-countdown-ring {
+  fill: none; stroke: var(--accent); stroke-width: 6; stroke-linecap: round;
+  transition: stroke-dashoffset 1s linear;
+}
+.transicao-countdown-num {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  font-size: clamp(2rem, 8vw, 2.5rem); font-weight: 700; color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.transicao-msg {
+  font-size: .9375rem; color: var(--text-dim); line-height: 1.5;
+  margin-bottom: clamp(1.5rem, 6vw, 2.5rem);
+}
+
+/* Botão fallback */
+.transicao-fallback {
+  display: inline-flex; align-items: center; gap: .5rem;
+  font-weight: 600; padding: .875rem 1.5rem;
+  border-radius: var(--r-sm);
+  transition: background .15s ease, transform .1s ease;
+  margin-bottom: 1rem;
+}
+.transicao-fallback:active { transform: scale(.97); }
+
+/* Voltar */
+.transicao-voltar {
+  display: inline-flex; align-items: center; gap: .4rem;
+  color: var(--text-dim); text-decoration: none; font-size: .9rem;
+  padding: .5rem; transition: color .15s ease;
+}
+.transicao-voltar:hover { color: var(--accent); }

@@ -1,0 +1,38 @@
+/* ══════════════════════════════════════════════
+   COMPONENTE: Salas (cards de sala)
+   ══════════════════════════════════════════════ */
+
+.salas-section { margin-bottom: clamp(2rem, 6vh, 3rem); }
+.salas-hint { font-size: 0.9375rem; color: var(--text-dim); margin-bottom: 0.75rem; }
+.salas-list { display: flex; flex-direction: column; gap: 0.75rem; }
+
+.sala-card {
+  display: flex; align-items: center; gap: 0.75rem;
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 1rem 1.25rem; min-height: 64px;
+  transition: background var(--tr), border-color var(--tr); cursor: pointer;
+}
+.sala-card:hover { border-color: var(--accent); }
+.sala-card:active { background: var(--accent-bg); }
+.sala-card-info { flex: 1; min-width: 0; cursor: pointer; }
+.sala-card-nome { font-size: 1.25rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sala-card-codigo { font-size: 0.875rem; color: var(--text-dim); font-family: ui-monospace, "SF Mono", monospace; letter-spacing: 0.03em; }
+.sala-card-acoes { display: flex; gap: 0.375rem; flex-shrink: 0; flex-wrap: wrap; }
+.btn-card {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 44px; height: 44px; border: none; border-radius: var(--r-sm);
+  background: transparent; color: var(--text-dim); font-size: 1.125rem;
+  cursor: pointer; transition: background var(--tr), color var(--tr);
+}
+.btn-card i { font-size: 1rem; }
+.btn-card:hover { background: var(--accent-bg); color: var(--text); }
+.btn-card:active { background: var(--border); }
+.btn-card.btn-remover { color: var(--red); }
+.btn-card.btn-remover:hover { background: rgba(227,68,68,0.1); color: var(--red); }
+
+/* Responsivo */
+@media (max-width: 360px) {
+  .sala-card { padding: 0.875rem 1rem; }
+  .sala-card-nome { font-size: 1.125rem; }
+  .btn-card { width: 40px; height: 40px; }
+}

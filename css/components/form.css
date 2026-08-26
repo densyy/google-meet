@@ -1,0 +1,45 @@
+/* ══════════════════════════════════════════════
+   COMPONENTE: Formulário nova reunião + Feedback
+   ══════════════════════════════════════════════ */
+
+.novo-section { margin-bottom: clamp(2rem, 6vh, 3rem); }
+.novo-label { color: var(--text); font-weight: 600; font-size: 1rem; margin-bottom: 0.75rem; }
+.input-row { display: flex; gap: 0.75rem; margin-bottom: 1rem; flex-wrap: nowrap; }
+.input-row input { flex: 1; min-width: 0; }
+.input-row input {
+  flex: 1; padding: 0.875rem 1rem; border: 2px solid var(--border); border-radius: var(--r-sm);
+  background: var(--surface); color: var(--text); font-size: 1.125rem;
+  font-family: ui-monospace, "SF Mono", monospace; outline: none;
+  transition: border-color var(--tr); min-height: 52px;
+}
+.input-row input:focus { border-color: var(--accent); }
+.input-row input::placeholder { color: var(--text-dim); font-family: inherit; letter-spacing: normal; }
+.btn-colar {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+  padding: 0 1.25rem; border: 2px solid var(--border); border-radius: var(--r-sm);
+  background: var(--bg); color: var(--text); font-size: 0.9375rem; font-weight: 500;
+  cursor: pointer; min-height: 52px; white-space: nowrap;
+  transition: background var(--tr), border-color var(--tr);
+}
+.btn-colar:hover { border-color: var(--accent); background: var(--accent-bg); }
+.btn-colar:active { background: var(--border); }
+.btn-entrar {
+  display: block; width: 100%; padding: 1rem; border: none; border-radius: var(--radius);
+  background: var(--accent); color: #fff; font-size: 1.25rem; font-weight: 600;
+  cursor: pointer; min-height: 60px;
+  transition: opacity var(--tr), transform 0.1s, background var(--tr);
+}
+.btn-entrar:hover { filter: brightness(1.1); }
+.btn-entrar:active { opacity: 0.85; transform: scale(0.98); }
+.btn-entrar:disabled { opacity: 0.6; cursor: wait; }
+
+/* Feedback inline */
+.feedback { margin-top: 0.75rem; font-size: 0.9375rem; min-height: 1.5em; line-height: 1.5; }
+.feedback.erro { color: var(--red); }
+.feedback.ok { color: var(--accent); }
+
+/* Responsivo */
+@media (max-width: 360px) {
+  .input-row { flex-wrap: wrap; }
+  .btn-colar { padding: 0 1rem; }
+}

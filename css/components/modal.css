@@ -1,0 +1,39 @@
+/* ══════════════════════════════════════════════
+   COMPONENTE: Modal (overlay + box + conteúdo)
+   ══════════════════════════════════════════════ */
+
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,.5);
+  backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 100; padding: var(--gap);
+  opacity: 0; visibility: hidden;
+  transition: opacity .25s ease, visibility .25s ease;
+}
+.modal-overlay.visible { opacity: 1; visibility: visible; }
+.modal-box {
+  background: var(--bg); border-radius: var(--radius); width: 100%; max-width: 420px;
+  max-height: 85dvh; overflow-y: auto; overscroll-behavior: contain;
+  box-shadow: 0 12px 40px rgba(0,0,0,.25); transform: translateY(16px) scale(.97);
+  transition: transform .25s ease;
+}
+.modal-overlay.visible .modal-box { transform: translateY(0) scale(1); }
+.modal-titulo {
+  font-size: 1.25rem; font-weight: 600; padding: 1.25rem 1.5rem 0;
+}
+.modal-conteudo { padding: 1rem 1.5rem; }
+.modal-botoes { display: flex; gap: 0.75rem; justify-content: flex-end; padding: 0.75rem 1.5rem 1.25rem; }
+.btn-modal {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 0.5rem 1.125rem; border-radius: var(--r-sm); border: none; cursor: pointer;
+  font-size: 0.9375rem; font-weight: 500;
+  transition: background .15s ease, transform .1s ease; white-space: nowrap;
+}
+.btn-modal:active { transform: scale(.97); }
+.btn-modal-padrão { background: var(--surface); color: var(--text); }
+.btn-modal-padrão:hover { background: var(--border); }
+.btn-modal-principal { background: var(--accent); color: #fff; }
+.btn-modal-principal:hover { filter: brightness(1.1); }
+.modal-conteudo p { margin-bottom: .75rem; line-height: 1.5; }
+.modal-conteudo ul { margin: .5rem 0 .75rem 1.25rem; line-height: 1.5; }
+.modal-conteudo .exemplo { font-family: ui-monospace, "SF Mono", monospace; font-size: .9375rem; background: var(--surface); padding: .375rem .5rem; border-radius: 6px; }

@@ -1,0 +1,19 @@
+/* ══════════════════════════════════════════════
+   COMPONENTE: Botão Ajuda
+   ══════════════════════════════════════════════ */
+
+.btn-ajuda {
+  display: inline-flex; align-items: center; gap: 0.5rem; border: none; background: none;
+  color: var(--text-dim); font-size: 0.9375rem; cursor: pointer; padding: 0.5rem;
+  margin-bottom: 0.25rem; border-radius: var(--r-sm);
+  transition: color var(--tr), background var(--tr);
+}
+.btn-ajuda:hover { color: var(--accent); background: var(--accent-bg); }
+.btn-ajuda:active { background: var(--border); }
+.btn-ajuda-circle {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 24px; height: 24px; border-radius: 50%; background: var(--border);
+  color: var(--text-dim); font-size: 0.8125rem; font-weight: 700;
+  transition: background var(--tr), color var(--tr);
+}
+.btn-ajuda:hover .btn-ajuda-circle { background: var(--accent); color: #fff; }
