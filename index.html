@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#000000">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Entrar no Meet</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+  <main>
+    <h1>Entrar no Meet</h1>
+
+    <!-- Minhas salas (cartões) -->
+    <section id="salas-section" class="salas-section hidden" aria-label="Minhas salvas">
+      <h2>Minhas salas</h2>
+      <p class="salas-hint">Toque numa sala para entrar</p>
+      <div id="salas-list" class="salas-list"></div>
+    </section>
+
+    <!-- Entrar em nova reunião -->
+    <section class="novo-section">
+      <h2 class="novo-label">Entrar em uma nova reunião</h2>
+      <div class="input-row">
+        <input
+          type="text"
+          id="codigo-input"
+          placeholder="Ex.: abc-defg-hij"
+          aria-label="Código que alguém te enviou"
+          autocomplete="off"
+          autocapitalize="none"
+          spellcheck="false"
+        >
+        <button id="btn-colar" class="btn-colar" type="button" aria-label="Colar código copiado">
+          <i class="fa-solid fa-paste"></i> Colar
+        </button>
+      </div>
+      <button id="btn-entrar" class="btn-entrar" type="button">Entrar</button>
+      <div id="feedback" class="feedback" aria-live="polite" role="status"></div>
+    </section>
+
+    <!-- Ajuda -->
+    <button id="btn-ajuda" class="btn-ajuda" type="button">
+      <span class="btn-ajuda-circle">?</span> Onde encontro esse código?
+    </button>
+
+    <!-- Resgate: nada aconteceu? -->
+    <div id="resgate" class="resgate hidden" role="alert">
+      <p>Nada aconteceu? Toque aqui para entrar pela internet.</p>
+      <a id="resgate-link" href="#" class="btn-resgate">Entrar pela internet</a>
+    </div>
+
+  </main>
+
+  <!-- Dialog de renomear -->
+  <dialog id="dialog-renomear" class="dialog-modal">
+    <form method="dialog" id="form-renomear">
+      <h3 class="dialog-titulo">Renomear sala</h3>
+      <label for="nome-input">Nome da sala</label>
+      <input type="text" id="nome-input" maxlength="30" autocomplete="off">
+      <div class="dialog-botoes">
+        <button type="button" id="btn-cancelar" class="btn-dialog-cancelar">Cancelar</button>
+        <button type="submit" value="ok" class="btn-dialog-ok">Pronto</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Dialog de ajuda -->
+  <dialog id="dialog-ajuda" class="dialog-modal">
+    <h3 class="dialog-titulo">Onde encontro esse código?</h3>
+    <ol class="ajuda-passos">
+      <li>Alguém te envia o código numa mensagem.</li>
+      <li>O código é composto por letras e números, separados por hífens.</li>
+      <li>Digite ou cole o código na tela e toque <strong>Entrar</strong>.</li>
+    </ol>
+    <div class="ajuda-exemplo">
+      <p class="ajuda-exemplo-label">Exemplo de código:</p>
+      <p class="ajuda-exemplo-url">
+        meet.google.com/<span class="ajuda-exemplo-codigo">abc-defg-hij</span>
+      </p>
+      <p class="ajuda-exemplo-hint">A parte colorida é o código que você precisa digitar.</p>
+    </div>
+    <div class="dialog-botoes">
+      <button type="button" id="btn-fechar-ajuda" class="btn-dialog-ok">Entendi</button>
+    </div>
+  </dialog>
+
+  <!-- Dialog de confirmação de remoção -->
+  <dialog id="dialog-remover" class="dialog-modal">
+    <h3 class="dialog-titulo">Remover sala</h3>
+    <p class="dialog-texto" id="dialog-remover-texto">Tem certeza que deseja remover?</p>
+    <div class="dialog-botoes">
+      <button type="button" id="btn-nao-remover" class="btn-dialog-cancelar">Não</button>
+      <button type="button" id="btn-sim-remover" class="btn-dialog-ok btn-dialog-danger">Remover</button>
+    </div>
+  </dialog>
+
+  <script src="script.js"></script>
+</body>
+</html>
