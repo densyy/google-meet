@@ -2,8 +2,7 @@
 
 import { formatarCodigo, extrairCodigo } from './lib/code.js';
 import { carregarSalas, salvarSalas } from './storage.js';
-import { salvarSeNovo, renomearSala, removerSala, buscarSalaPorCodigo } from './lib/rooms.js';
-import { construirUrlMeet } from './lib/redirect.js';
+import { salvarSeNovo, renomearSala, removerSala, buscarSalaPorCodigo, moverParaTopo } from './lib/rooms.js';
 import { toast } from './components/toast.js';
 import { renderizarSalas, modalRenomear, modalRemover, modalAjuda } from './components/room-card.js';
 
@@ -13,8 +12,6 @@ const input = document.getElementById('codigo-input');
 const btnEntrar = document.getElementById('btn-entrar');
 const btnColar = document.getElementById('btn-colar');
 const feedback = document.getElementById('feedback');
-const resgate = document.getElementById('resgate');
-const resgateLink = document.getElementById('resgate-link');
 const btnAjuda = document.getElementById('btn-ajuda');
 
 // ── Helpers ──────────────────────────────────────────────
@@ -24,24 +21,20 @@ function setFeedback(msg, tipo) {
   feedback.className = 'feedback ' + (tipo || '');
 }
 
-let timerResgate = null;
-
-function limparTimerResgate() {
-  if (timerResgate) clearTimeout(timerResgate);
-}
-
 function redirecionar(codigo, nomeSala) {
-  const url = construirUrlMeet(codigo);
+  // Move sala clicada para o topo da lista
+  const salas = carregarSalas();
+  const atualizadas = moverParaTopo(salas, codigo);
+  salvarSalas(atualizadas);
+
+  // Salva dados da sala para a tela de transição via sessionStorage
+  sessionStorage.setItem('transicao_codigo', codigo);
+  sessionStorage.setItem('transicao_nome', nomeSala || 'Sala');
+
   setFeedback('Abrindo ' + (nomeSala || 'sala') + '…', 'ok');
   btnEntrar.disabled = true;
 
-  resgate.classList.add('hidden');
-  timerResgate = setTimeout(() => {
-    resgateLink.href = url;
-    resgate.classList.remove('hidden');
-  }, 3000);
-
-  window.location.href = url;
+  window.location.href = 'transicao.html';
 }
 
 // ── Salas: callbacks para o componente room-card ─────────
@@ -129,17 +122,6 @@ input.addEventListener('keydown', (e) => {
 // ── Ajuda ────────────────────────────────────────────────
 
 btnAjuda.addEventListener('click', modalAjuda);
-
-// ── Resgate ──────────────────────────────────────────────
-
-resgateLink.addEventListener('click', () => {
-  resgate.classList.add('hidden');
-  limparTimerResgate();
-});
-
-window.addEventListener('pagehide', () => {
-  limparTimerResgate();
-});
 
 // ── Init ─────────────────────────────────────────────────
 atualizarSalas();

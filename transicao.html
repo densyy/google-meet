@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#000000">
+  <title>Entrando na sala…</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+  <main class="transicao-main">
+    <div class="transicao-card">
+      <div class="transicao-icon">
+        <i class="fa-solid fa-video"></i>
+      </div>
+      <h1 class="transicao-titulo">Entrando na sala</h1>
+      <p class="transicao-nome" id="transicao-nome"></p>
+
+      <!-- Countdown circular -->
+      <div class="transicao-countdown-wrap">
+        <svg class="transicao-countdown-svg" viewBox="0 0 120 120">
+          <circle class="transicao-countdown-bg" cx="60" cy="60" r="52" />
+          <circle class="transicao-countdown-ring" id="countdown-ring" cx="60" cy="60" r="52" />
+        </svg>
+        <span class="transicao-countdown-num" id="countdown-num">5</span>
+      </div>
+
+      <p class="transicao-msg">Redirecionando automaticamente…</p>
+
+      <!-- Botão fallback (deep link) -->
+      <a id="btn-fallback" class="transicao-fallback hidden" href="#" target="_blank" rel="noopener">
+        <i class="fa-solid fa-external-link-alt"></i>
+        Abrir manualmente
+      </a>
+
+      <!-- Voltar -->
+      <a id="btn-voltar" class="transicao-voltar" href="index.html">
+        <i class="fa-solid fa-arrow-left"></i>
+        Voltar
+      </a>
+    </div>
+  </main>
+
+  <script>
+    (function () {
+      var DURACAO = 5;
+      var MEET_BASE = 'https://meet.google.com/';
+
+      var nomeEl = document.getElementById('transicao-nome');
+      var numEl = document.getElementById('countdown-num');
+      var ringEl = document.getElementById('countdown-ring');
+      var fallbackBtn = document.getElementById('btn-fallback');
+
+      // Lê dados do sessionStorage (salvo pela index.html antes de navegar)
+      var codigo = sessionStorage.getItem('transicao_codigo') || '';
+      var nome = sessionStorage.getItem('transicao_nome') || 'Sala';
+
+      if (!codigo) {
+        window.location.href = 'index.html';
+        return;
+      }
+
+      // Limpa para não reutilizar acidentalmente
+      sessionStorage.removeItem('transicao_codigo');
+      sessionStorage.removeItem('transicao_nome');
+
+      nomeEl.textContent = nome;
+      var meetUrl = MEET_BASE + codigo;
+
+      var CIRCUMFERENCE = 2 * Math.PI * 52;
+      ringEl.style.strokeDasharray = CIRCUMFERENCE;
+      ringEl.style.strokeDashoffset = '0';
+
+      var fallbackTimer = setTimeout(function () {
+        fallbackBtn.href = meetUrl;
+        fallbackBtn.classList.remove('hidden');
+      }, 1000);
+
+      var restante = DURACAO;
+      numEl.textContent = restante;
+
+      var intervalo = setInterval(function () {
+        restante--;
+        numEl.textContent = restante;
+
+        var progresso = (DURACAO - restante) / DURACAO;
+        ringEl.style.strokeDashoffset = CIRCUMFERENCE * progresso;
+
+        if (restante <= 0) {
+          clearInterval(intervalo);
+          window.location.href = meetUrl;
+        }
+      }, 1000);
+
+      window.addEventListener('pagehide', function () {
+        clearInterval(intervalo);
+        clearTimeout(fallbackTimer);
+      });
+    })();
+  </script>
+</body>
+</html>
